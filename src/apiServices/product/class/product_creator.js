@@ -1,3 +1,4 @@
+const IDGenerator = require("src/apiServices/common/id_generator")
 const MissingProductField = require('../exception/missing-product-field')
 const ProductDao = require("./product_dao")
 module.exports = class ProductCreator {
@@ -13,12 +14,14 @@ module.exports = class ProductCreator {
 		  * or the barcode is already taken.
 
 		  * @param {[object]} productFields object with the product fields
-		 **/
-
-		 if(!productFields.name) throw new MissingProductField('name');
-		 if(!productFields.description) throw new MissingProductField('description');
-		 if(!productFields.price) throw new MissingProductField('price');
-		 if(!productFields.barcode) throw new MissingProductField('barcode');
+		**/
+		//If you don't have ID_Product then generate a uuid
+		if(!productFields.ID_Product) productFields.ID_Product = IDGenerator.generate()
+		//If any productField is missing then throw a MissingProductFIeld
+		if(!productFields.name) throw new MissingProductField('name');
+		if(!productFields.description) throw new MissingProductField('description');
+		if(!productFields.price) throw new MissingProductField('price');
+		if(!productFields.barcode) throw new MissingProductField('barcode');
 		return Promise.resolve(new ProductDao(productFields))
 	}
 }
