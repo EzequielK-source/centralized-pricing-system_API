@@ -6,7 +6,15 @@
   "scripts": {
     "test": "export NODE_PATH=. && export NODE_ENV=test && mocha test/**/*.test.js",
     "prepare": "husky install",
-	"coverage": "nyc npm run test"
+    "coverage": "nyc npm run test"
+  },
+  "husky":{
+	  "hooks":{
+		  "pre-push": "prepush-if-changed"
+	  }
+  },
+  "prepush-if-changed": {
+    "src/**/*.js": "npm run test"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +30,7 @@
     "husky": "^7.0.0",
     "mocha": "^9.2.1",
     "nodemon": "^2.0.15",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "prepush-if-changed": "^1.0.8"
   }
 }
