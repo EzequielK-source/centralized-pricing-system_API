@@ -54,5 +54,44 @@ describe('ProductCreator test', () => {
 				.eventually
 				.rejectedWith(MissingProductField, "Missing name field")
 		});
+		it('Missing description throw', () => {
+			const productFields = {
+				ID_Product: 'product_id',
+				name:"named",
+				price:1230,
+				barcode:"asdasdasd"
+			}
+
+			return expect(ProductCreator.create(productFields))
+				.to
+				.eventually
+				.rejectedWith(MissingProductField, "Missing description field")
+		});
+		it('Missing price throw', () => {
+			const productFields = {
+				ID_Product: 'product_id',
+				name:"named",
+				description:"product description",
+				barcode:"asdasdasd"
+			}
+
+			return expect(ProductCreator.create(productFields))
+				.to
+				.eventually
+				.rejectedWith(MissingProductField, "Missing price field")
+		});
+		it('Missing barcode throw', () => {
+			const productFields = {
+				ID_Product: 'product_id',
+				name:"named",
+				description:"product description",
+				price:1230
+			}
+
+			return expect(ProductCreator.create(productFields))
+				.to
+				.eventually
+				.rejectedWith(MissingProductField, "Missing barcode field")
+		});
 	});
 });
