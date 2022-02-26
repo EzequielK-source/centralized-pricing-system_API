@@ -1,3 +1,4 @@
+const MissingProductField = require('../exception/missing-product-field')
 const ProductDao = require("./product_dao")
 module.exports = class ProductCreator {
 	/**
@@ -13,6 +14,8 @@ module.exports = class ProductCreator {
 
 		  * @param {[object]} productFields object with the product fields
 		 **/
+
+		 if(!productFields.name) throw new MissingProductField('name');
 		return Promise.resolve(new ProductDao(productFields))
 	}
 }
