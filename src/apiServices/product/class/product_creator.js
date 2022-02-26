@@ -16,6 +16,9 @@ module.exports = class ProductCreator {
 		 **/
 
 		 if(!productFields.name) throw new MissingProductField('name');
+		 if(!productFields.description) throw new MissingProductField('description');
+		 if(!productFields.price) throw new MissingProductField('price');
+		 if(!productFields.barcode) throw new MissingProductField('barcode');
 		return Promise.resolve(new ProductDao(productFields))
 	}
 }
