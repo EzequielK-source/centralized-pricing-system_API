@@ -8,10 +8,10 @@
     "prepare": "husky install",
     "coverage": "nyc npm run test"
   },
-  "husky":{
-	  "hooks":{
-		  "pre-push": "prepush-if-changed"
-	  }
+  "husky": {
+    "hooks": {
+      "pre-push": "prepush-if-changed"
+    }
   },
   "prepush-if-changed": {
     "src/**/*.js": "npm run test"
@@ -21,7 +21,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
-    "npm": "^8.5.2"
+    "npm": "^8.5.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "chai": "^4.3.6",
