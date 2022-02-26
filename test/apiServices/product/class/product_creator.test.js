@@ -41,5 +41,18 @@ describe('ProductCreator test', () => {
 				.not
 				.rejectedWith(MissingProductField, "Missing ID_Product field")
 		});
+		it('Missing name throw', () => {
+			const productFields = {
+				ID_Product: 'product_id',
+				description:"product description",
+				price:1230,
+				barcode:"asdasdasd"
+			}
+
+			return expect(ProductCreator.create(productFields))
+				.to
+				.eventually
+				.rejectedWith(MissingProductField, "Missing name field")
+		});
 	});
 });
