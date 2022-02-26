@@ -4,6 +4,8 @@ const chaiAsPromised = require("chai-as-promised")
 chai.use(chaiAsPromised)
 const {expect, assert} = chai;
 
+//modules
+const {validate: uuidValidate} = require('uuid')
 //app deps
 const ProductCreator = require("src/apiServices/product/class/product_creator")
 const ProductDAO = require("src/apiServices/product/class/product_dao")
@@ -28,18 +30,23 @@ describe('ProductCreator test', () => {
 				.deep.equal(productFields);
 	});
 	describe('Missing any productField throw MissingProductField', () => {
-		it('Missing ID_Product not throw', () => {
+		it('Missing ID_Product not throw', async() => {
 			const productFields = {
 				name:"productname",
 				description:"product description",
 				price:1230,
 				barcode:"asdasdasd"
 			}
-			return expect(ProductCreator.create(productFields))
+			const productCreated = await ProductCreator.create(productFields);
+			expect(productCreated)
 				.to
-				.eventually
+				.have
+				.property("ID_Product")
 				.not
-				.rejectedWith(MissingProductField, "Missing ID_Product field")
+				.be
+				.empty;
+				
+			expect(uuidValidate(productCreated.ID_Product)).to.be.true;
 		});
 		it('Missing name throw', () => {
 			const productFields = {
