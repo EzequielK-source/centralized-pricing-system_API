@@ -6,7 +6,7 @@ const expect = chai.expect;
 //app
 const app = require("src/app");
 const request = chai.request;
-
+const ProductCreator = require("src/apiServices/product/class/product_creator")
 
 describe('API /products router', () => {
 	describe('product post request', () => {
@@ -90,6 +90,34 @@ describe('API /products router', () => {
 						status:"product created",
 						product: productFields
 					})
+					done();
+				})
+		});
+	});
+	describe('get /product/<barcode> test', () => {
+		const product = {
+			ID_Product: "express_product_test_id",
+			Name: "express_product_test_name",
+			Description: "express_product_test_description",
+			Price: 123,
+			Barcode: "express_product_test_barcode",
+		}
+		before(async()=>{
+			await ProductCreator.create(product);
+		})
+		it('request /product/barcode return Product ', (done) => {
+			request(app)
+				.get(`/products/${product.Barcode}`)
+				.end((err,res)=>{
+					if(err) done(err);
+
+					expect(res).to.have.status(200)
+					expect(res).to.have.property('body');
+					expect(res).to.be.json;
+
+					expect(res.body)
+						.to.be
+						.deep.equal(product)
 					done();
 				})
 		});
