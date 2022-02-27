@@ -1,6 +1,6 @@
 const {product: ProductModel} = require("src/services/sequelize/index")
+const ProductFieldsVerificator = require('./product_fields_verificator');
 const IDGenerator = require("src/apiServices/common/id_generator")
-const MissingProductField = require('../exception/missing-product-field')
 const ProductDAO = require("./product_dao")
 module.exports = class ProductCreator {
 	/**
@@ -19,10 +19,7 @@ module.exports = class ProductCreator {
 		//If you don't have ID_Product then generate a uuid
 		if(!productFields.ID_Product) productFields.ID_Product = IDGenerator.generate()
 		//If any productField is missing then throw a MissingProductFIeld
-		if(!productFields.Name) throw new MissingProductField('Name');
-		if(!productFields.Description) throw new MissingProductField('Description');
-		if(!productFields.Price) throw new MissingProductField('Price');
-		if(!productFields.Barcode) throw new MissingProductField('Barcode');
+		new ProductFieldsVerificator(productFields)
 
 		// const {ID_Product, Name, Description, Price, Barcode} = productFields
 		await ProductModel.create(productFields);
