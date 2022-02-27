@@ -68,5 +68,30 @@ describe('API /products router', () => {
 					})
 			});
 		});
+		it('valid request post return product dao', (done) => {
+			const productFields = {
+				Name: "test name",
+				Description: "description test",
+				Price: 1234323,
+				Barcode:"Many letters"
+			}
+			request(app)
+				.post("/products")
+				.set('content-type', 'application/json')
+				.send(productFields)
+				.end((err,res)=>{
+					if(err) done(err);
+
+					expect(res).to.have.status(201)
+					expect(res).to.be.json;
+					expect(res).to.have.property("body")
+					const body = res.body;
+					expect(body).to.deep.equal({
+						status:"product created",
+						product: productFields
+					})
+					done();
+				})
+		});
 	});
 });
