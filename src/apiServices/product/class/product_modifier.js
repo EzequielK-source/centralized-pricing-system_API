@@ -21,6 +21,31 @@ module.exports = class ProductModifier {
 		await product.save();
 		return Promise.resolve(new ProductDAO(product))
 	}
+	static async modifyByBarcode(Barcode, new_fields){
+		/**
+			* Search Product by Barcode and modify then
+			* as long as dont try edit ID_Product or
+			* Barcode
+
+			*@param Barcode STRING
+			*@param new_fields OBJECT
+
+			*@return ProductDAO
+		**/
+		this.validateNewFields(new_fields)
+		const product = await ProductModel.findOne({
+			where:{
+				Barcode
+			}
+		});
+
+		for(const property in new_fields){
+			product[property] = new_fields[property]
+		}
+
+		await product.save();
+		return Promise.resolve(new ProductDAO(product))
+	}
 	static validateNewFields(new_fields){
 		if(new_fields.Barcode) throw Error()
 		if(new_fields.ID_Product) throw Error()
