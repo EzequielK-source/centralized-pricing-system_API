@@ -7,8 +7,11 @@ const expect = chai.expect;
 const app = require("src/app");
 const request = chai.request;
 const ProductCreator = require("src/apiServices/product/class/product_creator")
-
+const deleteAllProducts = require("test/utils/delete_all_products")
 describe('API /products router', () => {
+	before(async()=>{
+		await deleteAllProducts();
+	})
 	describe('product post request', () => {
 		describe('missing any body param response status 400', () => {
 			it('missing Name send 400 status', (done) => {
@@ -123,7 +126,23 @@ describe('API /products router', () => {
 		});
 	});
 	describe('put /product/<barcode> test', () => {
-		it('non exist Product with barcode', (done) => {
+		let product_to_modify = {
+			Name: "product name_put-test",
+			Description: "product description_put-test",
+			Price: 1,
+			Barcode: "product barcode_put-test",
+		};
+		let new_product_fields = {
+			Name: "product newName_put-test"
+		}
+		before(async()=>{
+			try{
+				await ProductCreator.create(product_to_modify)
+			}catch(error){
+				console.error(error);
+			}
+		})
+		it('try modifiy Unregisted Barcode', (done) => {
 			request(app)
 				.put("/products/nonExistBarcode")
 				.send({
@@ -132,6 +151,17 @@ describe('API /products router', () => {
 				.end((err,res)=>{
 					if(err) done(err);
 					expect(res).to.have.status(400)
+					done();
+				})
+		});
+		it('successful modify returns 200 ', (done) => {
+			request(app)
+				.put(`/products/${product_to_modify.Barcode}`)
+				.send(new_product_fields)
+				.end((err,res)=>{
+					if(err) done(err);
+
+					expect(res).to.have.status(200)
 					done();
 				})
 		});
