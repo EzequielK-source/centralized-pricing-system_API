@@ -122,4 +122,18 @@ describe('API /products router', () => {
 				})
 		});
 	});
+	describe('put /product/<barcode> test', () => {
+		it('non exist Product with barcode', (done) => {
+			request(app)
+				.put("/products/nonExistBarcode")
+				.send({
+					Name: 'new name'
+				})
+				.end((err,res)=>{
+					if(err) done(err);
+					expect(res).to.have.status(400)
+					done();
+				})
+		});
+	});
 });
