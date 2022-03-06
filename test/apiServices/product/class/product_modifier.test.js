@@ -13,42 +13,91 @@ const ProductModifier = require("src/apiServices/product/class/product_modifier"
 const ProductCreator = require("src/apiServices/product/class/product_creator")
 const ProductDAO = require("src/apiServices/product/class/product_dao")
 describe('ProductModifier test', () => {
-	const productOne = {
-		ID_Product: "productOneToModify",
-		Name:"product_one",
-		Description:"product Description",
-		Price:1230,
-		Barcode:"zzzzzzzzzzz"
-	}
-	const productTwo = {
-		ID_Product: "productTwoToModify",
-		Name:"product_two",
-		Description:"product Description",
-		Price:1230,
-		Barcode:"xxxxxxxxxxxxxxxx"
-	}
-	before(async() => {
-		/* create two products for modify after */
-		try{
-			await ProductCreator.create(productOne)
-			await ProductCreator.create(productTwo)
-		}catch(err){
-			console.error(err)
-		}
-	});
-	it('modify Name for productOne', async () => {
-		const product_modified = await ProductModifier.modify(productOne.ID_Product, {
-			Name: "new name"
+
+	describe('modify one property', () => {
+		let productOne;
+		before(async() => {
+			/* create two products for modify after */
+			productOne = {
+				ID_Product: "productOneToModify",
+				Name:"product_one",
+				Description:"product Description",
+				Price:1230,
+				Barcode:"zzzzzzzzzzz"
+			}
+			try{
+				await ProductCreator.create(productOne)
+			}catch(err){
+				console.error(err)
+			}
 		});
 
-		expect(product_modified)
+		it('modify Name', async () => {
+			const product_modified = await ProductModifier.modify(productOne.ID_Product, {
+				Name: "new name"
+			});
+
+			expect(product_modified)
 			.to
 			.be
 			.instanceof(ProductDAO)
-		expect(product_modified.Name)
+			expect(product_modified.Name)
 			.to
 			.not
 			.deep
 			.equal(productOne.Name);
+		});
+		it('modify Price', async () => {
+			const product_modified = await ProductModifier.modify(productOne.ID_Product, {
+				Price: 0
+			});
+
+			expect(product_modified)
+			.to
+			.be
+			.instanceof(ProductDAO)
+			expect(product_modified.Price)
+			.to
+			.not
+			.deep
+			.equal(productOne.Price);
+		});
+		it('modify Description', async () => {
+			const product_modified = await ProductModifier.modify(productOne.ID_Product, {
+				Description: "new Description"
+			});
+
+			expect(product_modified)
+			.to
+			.be
+			.instanceof(ProductDAO)
+			expect(product_modified.Description)
+			.to
+			.not
+			.deep
+			.equal(productOne.Description);
+		});
+		it('try modify ID_Product throw error', () => {
+			return expect (
+				ProductModifier.modify(productOne.ID_Product,{
+				ID_Product: "new ID"
+				})
+			)
+			.to
+			.eventually
+			.be
+			.rejected;
+		});
+		it('try modify Barcode throw error', async () => {
+			return expect (
+				ProductModifier.modify(productOne.ID_Product,{
+				Barcode: "new barcode"
+				})
+			)
+			.to
+			.eventually
+			.be
+			.rejected;
+		});
 	});
 });
