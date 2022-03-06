@@ -3,6 +3,7 @@ const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised")
 chai.use(chaiAsPromised)
 const {expect, assert} = chai;
+const deleteAllProducts = require("test/utils/delete_all_products")
 
 //modules
 const {validate: uuidValidate} = require('uuid')
@@ -13,7 +14,9 @@ const ProductCreator = require("src/apiServices/product/class/product_creator")
 const ProductDAO = require("src/apiServices/product/class/product_dao")
 const MissingProductField = require("src/apiServices/product/exception/missing-product-field")
 describe('ProductCreator test', () => {
-
+	before(async() => {
+		await deleteAllProducts();
+	});
 	describe('Missing any productField throw MissingProductField', () => {
 		it('Missing ID_Product not throw', async() => {
 			const productFields = {
