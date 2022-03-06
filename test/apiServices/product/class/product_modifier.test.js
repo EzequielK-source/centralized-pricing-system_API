@@ -14,7 +14,7 @@ const ProductCreator = require("src/apiServices/product/class/product_creator")
 const ProductDAO = require("src/apiServices/product/class/product_dao")
 describe('ProductModifier test', () => {
 
-	describe('modify one property', () => {
+	describe('modify one property by pk', () => {
 		let productOne;
 		before(async() => {
 			/* create two products for modify after */
@@ -33,7 +33,7 @@ describe('ProductModifier test', () => {
 		});
 
 		it('modify Name', async () => {
-			const product_modified = await ProductModifier.modify(productOne.ID_Product, {
+			const product_modified = await ProductModifier.modifyByPK(productOne.ID_Product, {
 				Name: "new name"
 			});
 
@@ -48,7 +48,7 @@ describe('ProductModifier test', () => {
 			.equal(productOne.Name);
 		});
 		it('modify Price', async () => {
-			const product_modified = await ProductModifier.modify(productOne.ID_Product, {
+			const product_modified = await ProductModifier.modifyByPK(productOne.ID_Product, {
 				Price: 0
 			});
 
@@ -63,7 +63,7 @@ describe('ProductModifier test', () => {
 			.equal(productOne.Price);
 		});
 		it('modify Description', async () => {
-			const product_modified = await ProductModifier.modify(productOne.ID_Product, {
+			const product_modified = await ProductModifier.modifyByPK(productOne.ID_Product, {
 				Description: "new Description"
 			});
 
@@ -79,7 +79,7 @@ describe('ProductModifier test', () => {
 		});
 		it('try modify ID_Product throw error', () => {
 			return expect (
-				ProductModifier.modify(productOne.ID_Product,{
+				ProductModifier.modifyByPK(productOne.ID_Product,{
 				ID_Product: "new ID"
 				})
 			)
@@ -90,7 +90,7 @@ describe('ProductModifier test', () => {
 		});
 		it('try modify Barcode throw error', async () => {
 			return expect (
-				ProductModifier.modify(productOne.ID_Product,{
+				ProductModifier.modifyByPK(productOne.ID_Product,{
 				Barcode: "new barcode"
 				})
 			)
