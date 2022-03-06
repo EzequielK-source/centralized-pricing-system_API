@@ -4,13 +4,15 @@ const ProductDAO = require("./product_dao")
 module.exports = class ProductModifier {
 	static async modify(ID_Product, new_fields){
 		/**
-			* Search Product by ID, modify then and
-			  return ProductDAO
+			* Search Product by ID and modify then
+			  as long as dont try edit ID_Product
+			  or barcode
 
 			 *@param ID_Product STRING
 			 *@param new_fields OBJECT
 	    **/
-
+		if(new_fields.ID_Product) throw Error();
+		if(new_fields.Barcode) 	  throw Error();
 		const product = await ProductModel.findByPk(ID_Product);
 
 		for(const property in new_fields){
