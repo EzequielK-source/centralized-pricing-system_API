@@ -1,7 +1,6 @@
 const {product: ProductModel} = require('src/services/sequelize/index');
 const UnregisteredBarcode = require('../exception/unregistered-barcode');
 const ProductFieldsVerificator = require("./product_fields_verificator")
-const UnregisteredID = require('src/apiServices/common/exception/unregisterd_id')
 const ProductDAO = require("./product_dao")
 module.exports = class ProductModifier {
 	static async modifyByPK(ID_Product, new_fields){
@@ -41,7 +40,7 @@ module.exports = class ProductModifier {
 			}
 		});
 		if(!product) throw new UnregisteredBarcode();
-		
+
 		for(const property in new_fields){
 			product[property] = new_fields[property]
 		}
