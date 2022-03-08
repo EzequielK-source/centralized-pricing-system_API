@@ -1,7 +1,10 @@
 const ProductModifier = require("./class/product_modifier");
 const ProductFinder = require('./class/product_finder');
+const ProductCreator = require("./class/product_creator")
+const ProductFieldsVerificator = require('./class/product_fields_verificator');
 
-const updateProduct = async(req,res)=>{
+const productController = {};
+productController.updateProduct = async(req,res)=>{
 	res.set('Content-Type', 'application/json');
 	try{
 		const barcode = req.params.barcode;
@@ -17,7 +20,7 @@ const updateProduct = async(req,res)=>{
 		})
 	}
 }
-const getProductByBarcode = async(req,res)=>{
+productController.getProductByBarcode = async(req,res)=>{
 	res.set('Content-Type', 'application/json');
 	try{
 		const barcode = req.params.barcode;
@@ -30,7 +33,32 @@ const getProductByBarcode = async(req,res)=>{
 		});
 	}
 }
-module.exports = {
-		 updateProduct,
-		 getProductByBarcode
+productController.createProduct = async(req,res)=>{
+	res.set('Content-Type', 'application/json');
+	try{
+		new ProductFieldsVerificator(req.body)
+		const {
+			Name,
+			Price,
+			Barcode,
+			Description} = await ProductCreator.create(req.body);
+
+		return res.status(201).json({
+			status:"product created",
+			product:{
+				Name,
+				Price,
+				Barcode,
+				Description
+			}
+		});
+
+	}catch(err){
+		console.error(err);
+		return res.status(400).json({
+					status:"Product not modify",
+					error:err.name
+		})
+	}
 }
+module.exports = productController;

@@ -6,8 +6,8 @@ const expect = chai.expect;
 //app
 const app = require("src/app");
 const request = chai.request;
-const ProductCreator = require("src/apiServices/product/class/product_creator")
-const deleteAllProducts = require("test/utils/delete_all_products")
+const deleteAllProducts = require("test/utils/delete_all_products");
+const ProductCreator = require('src/apiServices/product/class/product_creator')
 describe('API /products router', () => {
 	before(async()=>{
 		await deleteAllProducts();
