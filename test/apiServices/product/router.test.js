@@ -143,24 +143,36 @@ describe('API /products router', () => {
 			}
 		})
 		it('try modifiy Unregisted Barcode', (done) => {
+			const expected_response = {
+				status:"Product not modify",
+				error:"UnregisteredBarcode"
+			}
 			request(app)
 				.put("/products/nonExistBarcode")
+				.set('content-type', 'application/json')
 				.send({
 					Name: 'new name'
 				})
 				.end((err,res)=>{
 					if(err) done(err);
-					expect(res).to.have.status(400)
+					expect(res).to.have.status(400);
+					expect(res).to.be.json;
+					expect(res.body)
+						.to
+						.be
+						.deep
+						.equal(expected_response)
 					done();
 				})
 		});
 		it('successful modify returns 200 ', (done) => {
 			request(app)
 				.put(`/products/${product_to_modify.Barcode}`)
+				.set('content-type', 'application/json')
 				.send(new_product_fields)
 				.end((err,res)=>{
 					if(err) done(err);
-
+					expect(res).to.be.json;
 					expect(res).to.have.status(200)
 					done();
 				})
