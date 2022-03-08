@@ -54,11 +54,12 @@ productController.createProduct = async(req,res)=>{
 		});
 
 	}catch(err){
-		console.error(err);
-		return res.status(400).json({
-					status:"Product not modify",
-					error:err.name
-		})
+		const error_response = {
+			status:'Product not created',
+			error: err.name
+		}
+		if(err.name == 'MissingProductField') error_response.error = err.message;
+		return res.status(400).json(error_response)
 	}
 }
 module.exports = productController;
