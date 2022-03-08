@@ -3,16 +3,15 @@ const productRouter = express.Router();
 
 const ProductFieldsVerificator = require('./class/product_fields_verificator');
 const ProductCreator = require('./class/product_creator');
-const ProductModifier = require('./class/product_modifier');
 const ProductFinder = require('./class/product_finder');
-
+const {updateProduct} = require('./controller');
 productRouter.route("/")
 	.get((req,res)=>{
 		return res.sendStatus(200)
 	})
 	.post(async(req,res)=>{
+		res.set('Content-Type', 'application/json');
 		try{
-			res.set('Content-Type', 'application/json');
 			new ProductFieldsVerificator(req.body)
 			const {
 				Name,
@@ -29,27 +28,18 @@ productRouter.route("/")
 			})
 
 		}catch(err){
-			return res.sendStatus(400)
+			return res.status(400).json({
+						status:"Product not modify",
+						error:err.name
+			})
 		}
 	})
 
 productRouter.route("/:barcode")
-	.put(async(req,res)=>{
-		try{
-			res.set('Content-Type', 'application/json');
-			const barcode = req.params.barcode;
-			const product_modified = await ProductModifier.modifyByBarcode(
-				barcode, req.body
-			)
-
-			return res.status(200).json(product_modified);
-		}catch(err){
-			return res.sendStatus(400)
-		}
-	})
+	.put(updateProduct)
 	.get(async (req,res)=>{
+		res.set('Content-Type', 'application/json');
 		try{
-			res.set('Content-Type', 'application/json');
 			const barcode = req.params.barcode;
 			const product = await ProductFinder.findByBarcode(barcode)
 			return res.status(200).json(product)
