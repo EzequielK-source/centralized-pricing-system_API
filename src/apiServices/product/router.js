@@ -3,8 +3,7 @@ const productRouter = express.Router();
 
 const ProductFieldsVerificator = require('./class/product_fields_verificator');
 const ProductCreator = require('./class/product_creator');
-const ProductFinder = require('./class/product_finder');
-const {updateProduct} = require('./controller');
+const {updateProduct,getProductByBarcode} = require('./controller');
 productRouter.route("/")
 	.get((req,res)=>{
 		return res.sendStatus(200)
@@ -37,14 +36,5 @@ productRouter.route("/")
 
 productRouter.route("/:barcode")
 	.put(updateProduct)
-	.get(async (req,res)=>{
-		res.set('Content-Type', 'application/json');
-		try{
-			const barcode = req.params.barcode;
-			const product = await ProductFinder.findByBarcode(barcode)
-			return res.status(200).json(product)
-		}catch(err){
-			return res.status(400).json(err);
-		}
-	})
+	.get(getProductByBarcode)
 module.exports = productRouter

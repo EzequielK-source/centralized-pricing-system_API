@@ -1,4 +1,6 @@
-const ProductModifier = require("./class/product_modifier")
+const ProductModifier = require("./class/product_modifier");
+const ProductFinder = require('./class/product_finder');
+
 const updateProduct = async(req,res)=>{
 	res.set('Content-Type', 'application/json');
 	try{
@@ -15,6 +17,20 @@ const updateProduct = async(req,res)=>{
 		})
 	}
 }
+const getProductByBarcode = async(req,res)=>{
+	res.set('Content-Type', 'application/json');
+	try{
+		const barcode = req.params.barcode;
+		const product = await ProductFinder.findByBarcode(barcode)
+		return res.status(200).json(product)
+	}catch(err){
+		return res.status(400).json({
+			status:'Product not found',
+			error: err.name
+		});
+	}
+}
 module.exports = {
-		 updateProduct
+		 updateProduct,
+		 getProductByBarcode
 }
