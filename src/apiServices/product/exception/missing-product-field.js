@@ -6,7 +6,8 @@ module.exports = class MissingProductField extends Error {
 			* The error message varies depending on the field
 			* passed by parameter as name @missingField.
 		**/
-		super(`Missing ${missingField} field`)
+		super()
+		this.message = `Missing ${missingField} field`
 		this.name = 'MissingProductField'
 	}
 }
