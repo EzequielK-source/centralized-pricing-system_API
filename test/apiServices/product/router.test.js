@@ -9,14 +9,17 @@ const request = chai.request;
 const deleteAllProducts = require("test/utils/delete_all_products");
 const ProductCreator = require('src/apiServices/product/class/product_creator')
 describe('API /products router', () => {
-	before(async()=>{
-		await deleteAllProducts();
-	})
+	before(async()=>{ await deleteAllProducts(); })
 	describe('product post request', () => {
 		describe('missing any body param response status 400', () => {
 			it('missing Name send 400 status', (done) => {
+				const expected_response = {
+					status:'Product not created',
+					error: 'Missing Name field'
+				}
 				request(app)
 					.post("/products")
+					.set('content-type', 'application/json')
 					.send({
 						Description: "description",
 						Barcode: "barcode",
@@ -25,12 +28,22 @@ describe('API /products router', () => {
 					.end((err,res)=>{
 						if(err) done(err)
 						expect(res).to.have.status(400)
+						expect(res.body)
+							.to
+							.be
+							.deep
+							.equal(expected_response)
 						done()
 					})
 			});
 			it('missing Description send 400 status', (done) => {
+				const expected_response = {
+					status:'Product not created',
+					error: 'Missing Description field'
+				}
 				request(app)
 					.post("/products")
+					.set('content-type', 'application/json')
 					.send({
 						Name: "description",
 						Barcode: "barcode",
@@ -39,12 +52,22 @@ describe('API /products router', () => {
 					.end((err,res)=>{
 						if(err) done(err)
 						expect(res).to.have.status(400)
+						expect(res.body)
+							.to
+							.be
+							.deep
+							.equal(expected_response)
 						done()
 					})
 			});
 			it('missing Price send 400 status', (done) => {
+				const expected_response = {
+					status:'Product not created',
+					error: 'Missing Price field'
+				}
 				request(app)
 					.post("/products")
+					.set('content-type', 'application/json')
 					.send({
 						Name: "description",
 						Barcode: "barcode",
@@ -53,12 +76,22 @@ describe('API /products router', () => {
 					.end((err,res)=>{
 						if(err) done(err)
 						expect(res).to.have.status(400)
+						expect(res.body)
+							.to
+							.be
+							.deep
+							.equal(expected_response)
 						done()
 					})
 			});
 			it('missing Barcode send 400 status', (done) => {
+				const expected_response = {
+					status:'Product not created',
+					error: 'Missing Barcode field'
+				}
 				request(app)
 					.post("/products")
+					.set('content-type', 'application/json')
 					.send({
 						Name: "description",
 						Price: "barcode",
@@ -67,6 +100,11 @@ describe('API /products router', () => {
 					.end((err,res)=>{
 						if(err) done(err)
 						expect(res).to.have.status(400)
+						expect(res.body)
+							.to
+							.be
+							.deep
+							.equal(expected_response)
 						done()
 					})
 			});
@@ -108,9 +146,11 @@ describe('API /products router', () => {
 		before(async()=>{
 			await ProductCreator.create(product);
 		})
+
 		it('request /product/barcode return Product ', (done) => {
 			request(app)
 				.get(`/products/${product.Barcode}`)
+				.set('content-type', 'application/json')
 				.end((err,res)=>{
 					if(err) done(err);
 
@@ -136,11 +176,7 @@ describe('API /products router', () => {
 			Name: "product newName_put-test"
 		}
 		before(async()=>{
-			try{
-				await ProductCreator.create(product_to_modify)
-			}catch(error){
-				console.error(error);
-			}
+			await ProductCreator.create(product_to_modify)
 		})
 		it('try modifiy Unregisted Barcode', (done) => {
 			const expected_response = {
