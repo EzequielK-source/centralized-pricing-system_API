@@ -164,6 +164,28 @@ describe('API /products router', () => {
 					done();
 				})
 		});
+		it('request /product/barcode with unregistered barcode return 400', (done) => {
+			const expected_response = {
+				status: 'Product not found',
+				error: 'UnregisteredBarcode'
+			}
+			request(app)
+				.get('/products/nonExistBarcode')
+				.set('content-type', 'application/json')
+				.end((err,res)=>{
+					if(err) done(err);
+
+					expect(res).to.have.status(400);
+					expect(res).to.be.json;
+
+					expect(res.body)
+						.to
+						.be
+						.deep
+						.equal(expected_response);
+					done();
+				})
+		});
 	});
 	describe('put /product/<barcode> test', () => {
 		let product_to_modify = {
