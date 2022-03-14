@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+	"dev":"export NODE_PATH=. && export NODE_ENV=dev && nodemon src/bin/www.js",
     "test": "export NODE_PATH=. && export NODE_ENV=test && mocha test/**/*.test.js --exit",
     "prepare": "husky install",
     "coverage": "nyc npm run test",
