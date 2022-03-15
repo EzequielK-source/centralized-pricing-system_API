@@ -244,15 +244,9 @@ describe('API /products router', () => {
 				Price: 1,
 				Barcode: "product_to_delete_bc"
 			}
-			let product_to_delete_two = {
-				Name: "product_to_delete_two",
-				Description: "product_to_delete",
-				Price: 1,
-				Barcode: "product_to_delete_bc_two"
-			}
+
 			before(async()=>{
 				await ProductCreator.create(product_to_delete_one)
-				await ProductCreator.create(product_to_delete_two)
 			})
 			it('valid delete request', (done) => {
 				request(app)
@@ -281,6 +275,8 @@ describe('API /products router', () => {
 						done();
 					})
 			});
+
+
 		})
 	})
 });
