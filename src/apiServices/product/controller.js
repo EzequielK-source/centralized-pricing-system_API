@@ -1,6 +1,7 @@
 const ProductModifier = require("./class/product_modifier");
 const ProductFinder = require('./class/product_finder');
 const ProductCreator = require("./class/product_creator")
+const ProductDeleter = require("./class/product_deleter")
 const ProductFieldsVerificator = require('./class/product_fields_verificator');
 
 const productController = {};
@@ -60,6 +61,22 @@ productController.createProduct = async(req,res)=>{
 		}
 		if(err.name == 'MissingProductField') error_response.error = err.message;
 		return res.status(400).json(error_response)
+	}
+}
+
+productController.deleteProductByBarcode = async(req,res)=>{
+	res.set('Content-Type', 'application/json');
+	try{
+		const barcode = req.params.barcode
+		await ProductDeleter.delete(barcode)
+		return res.status(200).json({
+			status:"Product deleted"
+		});
+	}catch(err){
+		return res.status(400).json({
+			status: "Product not deleted",
+			error: err.name
+		})
 	}
 }
 module.exports = productController;
