@@ -135,20 +135,21 @@ describe('API /products router', () => {
 				})
 		});
 	});
-	describe('get /product/<barcode> test', () => {
-		const product = {
-			ID_Product: "express_product_test_id",
-			Name: "express_product_test_name",
-			Description: "express_product_test_description",
-			Price: 123,
-			Barcode: "express_product_test_barcode",
-		}
-		before(async()=>{
-			await ProductCreator.create(product);
-		})
+	describe("/products/<barcode> route test", ()=>{
+		describe('get product test', () => {
+			const product = {
+				ID_Product: "express_product_test_id",
+				Name: "express_product_test_name",
+				Description: "express_product_test_description",
+				Price: 123,
+				Barcode: "express_product_test_barcode",
+			}
+			before(async()=>{
+				await ProductCreator.create(product);
+			})
 
-		it('request /product/barcode return Product ', (done) => {
-			request(app)
+			it('request /product/barcode return Product ', (done) => {
+				request(app)
 				.get(`/products/${product.Barcode}`)
 				.set('content-type', 'application/json')
 				.end((err,res)=>{
@@ -159,17 +160,17 @@ describe('API /products router', () => {
 					expect(res).to.be.json;
 
 					expect(res.body)
-						.to.be
-						.deep.equal(product)
+					.to.be
+					.deep.equal(product)
 					done();
 				})
-		});
-		it('request /product/barcode with unregistered barcode return 400', (done) => {
-			const expected_response = {
-				status: 'Product not found',
-				error: 'UnregisteredBarcode'
-			}
-			request(app)
+			});
+			it('request /product/barcode with unregistered barcode return 400', (done) => {
+				const expected_response = {
+					status: 'Product not found',
+					error: 'UnregisteredBarcode'
+				}
+				request(app)
 				.get('/products/nonExistBarcode')
 				.set('content-type', 'application/json')
 				.end((err,res)=>{
@@ -179,33 +180,33 @@ describe('API /products router', () => {
 					expect(res).to.be.json;
 
 					expect(res.body)
-						.to
-						.be
-						.deep
-						.equal(expected_response);
+					.to
+					.be
+					.deep
+					.equal(expected_response);
 					done();
 				})
+			});
 		});
-	});
-	describe('put /product/<barcode> test', () => {
-		let product_to_modify = {
-			Name: "product name_put-test",
-			Description: "product description_put-test",
-			Price: 1,
-			Barcode: "product barcode_put-test",
-		};
-		let new_product_fields = {
-			Name: "product newName_put-test"
-		}
-		before(async()=>{
-			await ProductCreator.create(product_to_modify)
-		})
-		it('try modifiy Unregisted Barcode', (done) => {
-			const expected_response = {
-				status:"Product not modify",
-				error:"UnregisteredBarcode"
+		describe('put product test', () => {
+			let product_to_modify = {
+				Name: "product name_put-test",
+				Description: "product description_put-test",
+				Price: 1,
+				Barcode: "product barcode_put-test",
+			};
+			let new_product_fields = {
+				Name: "product newName_put-test"
 			}
-			request(app)
+			before(async()=>{
+				await ProductCreator.create(product_to_modify)
+			})
+			it('try modifiy Unregisted Barcode', (done) => {
+				const expected_response = {
+					status:"Product not modify",
+					error:"UnregisteredBarcode"
+				}
+				request(app)
 				.put("/products/nonExistBarcode")
 				.set('content-type', 'application/json')
 				.send({
@@ -216,15 +217,15 @@ describe('API /products router', () => {
 					expect(res).to.have.status(400);
 					expect(res).to.be.json;
 					expect(res.body)
-						.to
-						.be
-						.deep
-						.equal(expected_response)
+					.to
+					.be
+					.deep
+					.equal(expected_response)
 					done();
 				})
-		});
-		it('successful modify returns 200 ', (done) => {
-			request(app)
+			});
+			it('successful modify returns 200 ', (done) => {
+				request(app)
 				.put(`/products/${product_to_modify.Barcode}`)
 				.set('content-type', 'application/json')
 				.send(new_product_fields)
@@ -234,6 +235,52 @@ describe('API /products router', () => {
 					expect(res).to.have.status(200)
 					done();
 				})
+			});
 		});
-	});
+		describe('delete product test',()=>{
+			let product_to_delete_one = {
+				Name: "product_to_delete",
+				Description: "product_to_delete",
+				Price: 1,
+				Barcode: "product_to_delete_bc"
+			}
+			let product_to_delete_two = {
+				Name: "product_to_delete_two",
+				Description: "product_to_delete",
+				Price: 1,
+				Barcode: "product_to_delete_bc_two"
+			}
+			before(async()=>{
+				await ProductCreator.create(product_to_delete_one)
+				await ProductCreator.create(product_to_delete_two)
+			})
+			it('valid delete request', (done) => {
+				request(app)
+					.delete(`/products/${product_to_delete_one.Barcode}`)
+					.end((err,res)=>{
+						if(err) done(err);
+
+						expect(res).to.have.status(200)
+						expect(res.body).to.be.deep.equal( {
+							status: "Product deleted"
+						})
+						done();
+					})
+			});
+			it('try delete not unregistered barcode return status 400', (done) => {
+				request(app)
+					.delete("/products/unregisteredbarcode")
+					.end((err,res)=>{
+						if(err) done(err);
+
+						expect(res).to.have.status(400)
+						expect(res.body).to.be.deep.equal( {
+							status: "Product not deleted",
+							error: "UnregisteredBarcode"
+						})
+						done();
+					})
+			});
+		})
+	})
 });
