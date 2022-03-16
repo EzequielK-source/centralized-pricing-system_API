@@ -17,4 +17,14 @@ describe('Express API test', () => {
 				done();
 			})
 	});
+	it('api /users request status 200', (done) => {
+		request(app)
+			.get("/users")
+			.end((err,res)=>{
+				if(err) done(err);
+
+				expect(res).to.have.status(200)
+				done();
+			})
+	});
 });
